@@ -3,7 +3,7 @@
 > **Source of truth.** This document defines *what* the app does. Nothing is built that is not described here, and nothing described here is skipped or changed without the project owner's approval. When a requirement changes, this file is updated **first**, then the code, and the change is logged in `PROGRESS.md` → Decision log.
 
 - **Working title:** Spotify Guess Song (final name TBD — must not use "Spotify" or "Heardle", which are third-party trademarks)
-- **Last updated:** 2026-11-25
+- **Last updated:** 2026-11-26
 - **Status:** Phase 1 — specification approved, implementation not started
 
 ---
@@ -217,7 +217,7 @@ After each song: reveal cover, title, artist and result colour; button to play a
 - Default audio engine.
 - Language: **English / Español**, defaulting to the browser language (`es*` → Spanish, otherwise English); persisted.
 - Volume.
-- Spotify account: connect / disconnect, connection status, Premium/DRM check.
+- Spotify account: connect / disconnect, connection status, browser/DRM check. (Premium can't be checked up front: since Feb 2026 the Web API no longer returns the user's plan, so a non-Premium account only shows up when the player reports an account error, which is then explained to the user.)
 - Data: export/import library and records (JSON), clear all data (with confirmation).
 
 ## 12. Internationalisation

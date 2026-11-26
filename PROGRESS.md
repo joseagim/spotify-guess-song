@@ -4,8 +4,8 @@ Living status of the project. Update at the end of every milestone (and whenever
 
 ## Current status
 - **Phase:** 1
-- **Current milestone:** M1 — not started
-- **Next action:** Owner creates the Spotify developer app and shares the Client ID; agent starts M1 with the Spotify Web Playback SDK spike.
+- **Current milestone:** M1 — built, waiting for the owner's manual test (Spotify spike + Sound Lab)
+- **Next action:** Owner runs the app, tests the checklist below and reports. If the Spotify player connects and plays, continue with M2; if not, send the diagnostics log.
 
 ## Milestones — Phase 1
 
@@ -13,16 +13,27 @@ Living status of the project. Update at the end of every milestone (and whenever
 - [x] `REQUIREMENTS.md`, `CLAUDE.md`, `PROGRESS.md`, `README.md`
 
 ### M1 · Scaffold + audio engines + Sound Lab
-- [ ] **Spike:** Spotify PKCE login + Web Playback SDK connects in Development Mode and plays 1 s from position 0. *If this fails, stop and report.*
-- [ ] Vite + React + TS + Tailwind + Zustand + Router + Vitest + ESLint/Prettier scaffold; dev server fixed to `127.0.0.1:5173`
-- [ ] i18n layer (EN/ES, browser detection, switch in Settings)
-- [ ] App shell: dark/green theme, navigation, placeholder screens
-- [ ] Vite proxy for Deezer API and preview audio (allow-listed hosts)
-- [ ] `AudioEngine` interface
-- [ ] Deezer engine (Web Audio, sample-accurate clips)
-- [ ] Spotify engine (SDK, muted start, measured clip length)
-- [ ] Sound Lab: play the same clip with both engines and show measured durations
-- [ ] Settings: default engine, language, volume, Spotify connect/disconnect
+- [ ] **Spike (owner to verify):** Spotify PKCE login + Web Playback SDK connects in Development Mode and plays 1 s from position 0. *If this fails, stop and report.*
+- [x] Vite + React + TS + Tailwind + Zustand + Router + Vitest + ESLint/Prettier scaffold; dev server fixed to `127.0.0.1:5173`
+- [x] i18n layer (EN/ES, browser detection, switch in Settings)
+- [x] App shell: dark/green theme, navigation, placeholder screens
+- [x] Vite proxy for Deezer API and preview audio (allow-listed hosts)
+- [x] `AudioEngine` interface
+- [x] Deezer engine (Web Audio, sample-accurate clips) — verified in headless Chrome with mocked Deezer responses
+- [x] Spotify engine (SDK, muted cueing, measured clip length, diagnostics log, browser/DRM check, reconnect after the device drops)
+- [x] Independent review pass: 18 findings, all fixed (cancellation races, reconnects, proxy redirects, multi-tab token refresh, i18n of errors)
+- [x] Sound Lab: play the same clip with both engines and show measured durations
+- [x] Settings: default engine, language, volume, Spotify connect/disconnect
+
+**M1 manual test checklist (owner)**
+1. `npm install` then `npm run dev`, open http://127.0.0.1:5173 in Chrome.
+2. Settings → Connect Spotify → log in → back in Settings it says "Connected as …".
+3. Sound Lab → search a song → Deezer row: play 0.1 s, 1 s and 5 s, "From the start" and "Random".
+4. Spotify row: status turns "Ready"; play 1 s "From the start" — it must be the real intro, with no audible delay or blip.
+5. Try 0.1 s and 0.3 s on Spotify and note the measured "Played … ms".
+6. "Play Deezer, then Spotify" plays both in order.
+7. Switch language EN/ES in Settings; the whole UI changes.
+8. If Spotify fails anywhere: open "Spotify diagnostics", copy the log and send it.
 
 ### M2 · Library and song sources
 - [ ] IndexedDB schema (lists, tracks, match cache)
@@ -80,6 +91,12 @@ Online multiplayer · deployment · accounts & sync · extra modes (Timeline, Hi
 | 2026-11-25 | Code and docs in English; UI in EN/ES following the browser language | Owner preference. |
 | 2026-11-25 | SoundCloud engine parked | Spotify already provides real intros. |
 | 2026-11-25 | Final name pending; avoid "Spotify" and "Heardle" | Third-party trademarks. |
+| 2026-11-26 | Working title in the UI is "Guess Song" (`src/config/app.ts`) | Needs some name until the final one is chosen. |
+| 2026-11-26 | Spotify engine hides start latency by cueing: start muted, pause once really playing, seek to the start point; each clip is then a local resume/pause | Keeps the intro intact and makes replays instant. |
+| 2026-11-26 | Premium is detected only via the player's account error; the browser/DRM check runs before connecting | The Web API no longer exposes the user's plan (Feb 2026). |
+| 2026-11-26 | M1 uses a simple Spotify lookup (ISRC, then exact title + artist); full matching with cache comes in M2 | Sound Lab needs it now; §4.3 is M2 scope. |
 
 ## Notes
-- (Add findings here as milestones progress, e.g. results of the Spotify SDK spike.)
+- Stack versions: Vite 8, React 19, React Router 7, Tailwind 4, Zustand 5, TypeScript 6.0 (typescript-eslint does not support TS 7 yet), Vitest 5, ESLint 9.
+- Install dependencies on the machine that runs the app (`npm install` on Windows). Do not copy `node_modules` between operating systems.
+- Spotify SDK spike result: *pending owner test.*

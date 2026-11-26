@@ -1,0 +1,71 @@
+@import 'tailwindcss';
+
+@theme {
+  /* Forest-at-night base instead of neutral black; one bright signal green. */
+  --color-night: #0e1813;
+  --color-moss: #15231c;
+  --color-moss-raised: #1c2e25;
+  --color-fern: #2a4035;
+  --color-mist: #dcebe2;
+  --color-sage: #93ad9f;
+  --color-signal: #3ee38c;
+  --color-signal-deep: #1f9e5c;
+  --color-amber: #f2c14e;
+  --color-coral: #ff6f61;
+
+  --font-display: 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    background-color: var(--color-night);
+    color: var(--color-mist);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    min-height: 100dvh;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-optical-sizing: auto;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-signal);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--color-signal) 35%, transparent);
+  }
+}
+
+/* The clip segment glows while it plays: the one piece of motion that answers an action. */
+@keyframes clip-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--color-signal) 60%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 6px color-mix(in oklab, var(--color-signal) 0%, transparent);
+  }
+}
+
+.clip-playing {
+  animation: clip-pulse 0.9s ease-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .clip-playing {
+    animation: none;
+  }
+}
